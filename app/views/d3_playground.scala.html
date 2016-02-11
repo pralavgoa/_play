@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+
+.day {
+  fill: #fff;
+  stroke: #ccc;
+}
+
+.month {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+.RdYlGn .q0-11{fill:rgb(165,0,38)}
+.RdYlGn .q1-11{fill:rgb(215,48,39)}
+.RdYlGn .q2-11{fill:rgb(244,109,67)}
+.RdYlGn .q3-11{fill:rgb(253,174,97)}
+.RdYlGn .q4-11{fill:rgb(254,224,139)}
+.RdYlGn .q5-11{fill:rgb(255,255,191)}
+.RdYlGn .q6-11{fill:rgb(217,239,139)}
+.RdYlGn .q7-11{fill:rgb(166,217,106)}
+.RdYlGn .q8-11{fill:rgb(102,189,99)}
+.RdYlGn .q9-11{fill:rgb(26,152,80)}
+.RdYlGn .q10-11{fill:rgb(0,104,55)}
+
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script>
+var n=4
+var numRows=Math.pow(2,n)-1
+var numCells=n*numRows
+var pixelWidth=500
+var pixelHeight=500
+var extraPixels=10;
+
+var rows = d3.range(0,numCells);
+var scaleX = d3.scale.linear()
+		.domain([0,n])
+		.range([0,pixelWidth-extraPixels]);
+var scaleY = d3.scale.linear()
+                .domain([0,numRows])
+                .range([0,pixelHeight-extraPixels]);
+var svg = d3.select("body").append("svg")
+            .attr("width", pixelWidth)
+	    .attr("height", pixelHeight);
+svg.selectAll("rect")
+	.data(rows)
+      .enter().append("rect")
+	.attr("x", function(d){return scaleX((d%n))})
+	.attr("y", function(d){return scaleY(Math.floor((d/n)))})
+	.attr("width",(pixelWidth-extraPixels)/n)
+	.attr("height",(pixelHeight-extraPixels)/numRows)
+	.attr("fill", function(d){
+				if(d > Math.floor(numCells/2) && d%n==0)
+				  return "white"
+				else 
+				  return "black"});
+</script>
