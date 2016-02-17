@@ -33,13 +33,14 @@ body {
 </style>
 <body>
 <script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script>
-var n=4
-var numRows=Math.pow(2,n)-1
+var n=6
+var numRows=Math.pow(2,n)
 var numCells=n*numRows
 var pixelWidth=500
 var pixelHeight=500
-var extraPixels=10;
+var extraPixels=0;
 
 var rows = d3.range(0,numCells);
 var scaleX = d3.scale.linear()
@@ -50,7 +51,8 @@ var scaleY = d3.scale.linear()
                 .range([0,pixelHeight-extraPixels]);
 var svg = d3.select("body").append("svg")
             .attr("width", pixelWidth)
-	    .attr("height", pixelHeight);
+	    .attr("height", pixelHeight)
+	    .attr("style", "outline: thin solid red;");
 svg.selectAll("rect")
 	.data(rows)
       .enter().append("rect")
@@ -59,8 +61,17 @@ svg.selectAll("rect")
 	.attr("width",(pixelWidth-extraPixels)/n)
 	.attr("height",(pixelHeight-extraPixels)/numRows)
 	.attr("fill", function(d){
-				if(d > Math.floor(numCells/2) && d%n==0)
+				var bitRow=Math.floor(d/n);
+				var bitOrder=(n-d%n)-1
+				var quotient=0
+				var dividend=bitRow
+				for(var i=0; i <= (n-bitOrder-1) ;i++){
+				  quotient=Math.floor(dividend/Math.pow(2,n-i-1))
+				  remainder=dividend%Math.pow(2,n-i-1)
+				  dividend=remainder
+				}
+				if(quotient==1)
 				  return "white"
 				else 
-				  return "black"});
+				  return "gray"});
 </script>
