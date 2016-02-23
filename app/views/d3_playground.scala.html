@@ -35,43 +35,115 @@ body {
 <script src="//d3js.org/d3.v3.min.js"></script>
 <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
 <script>
-var n=6
+var n=8
 var numRows=Math.pow(2,n)
 var numCells=n*numRows
-var pixelWidth=500
-var pixelHeight=500
-var extraPixels=0;
+var pixelWidth=1000
+var pixelHeight=800
+var extraPixels=50
+var patientVisitCounts = [];
+d3.csv("assets/javascripts/patient_visits.csv", function(d) {
+  return {
+    index:+d.row_number,
+    count:+d.count
+  };
+}, function(error, rows) {
+  patientVisitCounts=rows;
+  printChart()
+});
 
-var rows = d3.range(0,numCells);
-var scaleX = d3.scale.linear()
+function printChart(){
+  var dataPatients=getPatientData(numRows, patientVisitCounts)
+  var totalPatients=0
+   $.each(dataPatients,function() {
+    totalPatients += this;
+  });
+  var cells = d3.range(0,numCells);
+  var scaleX = d3.scale.linear()
 		.domain([0,n])
 		.range([0,pixelWidth-extraPixels]);
-var scaleY = d3.scale.linear()
+  var scaleY = d3.scale.linear()
                 .domain([0,numRows])
                 .range([0,pixelHeight-extraPixels]);
-var svg = d3.select("body").append("svg")
-            .attr("width", pixelWidth)
-	    .attr("height", pixelHeight)
-	    .attr("style", "outline: thin solid red;");
-svg.selectAll("rect")
-	.data(rows)
+  var svg = d3.select("body").append("svg")
+            .attr("width", pixelWidth+extraPixels)
+	    .attr("height", pixelHeight+extraPixels)
+	    .attr("style", "outline: thin solid blue;background-color:#aaa;")
+	.append("g")
+	    .attr("transform", "translate("+extraPixels+","+extraPixels+")");
+  svg.append("text")
+    .attr("transform", "translate(-6,50)rotate(-90)")
+    .style("text-anchor", "middle")
+    .text("patient count");
+
+  var heights = []
+  var yCoordinates = []
+  for(var i=0;i<cells.length;i++){
+    var height = Math.round((dataPatients[Math.floor(cells[i]/n)]/totalPatients)*(pixelHeight-extraPixels))
+    if(i==0){
+	yCoordinates[i]=0
+    }
+    else{
+        if(i%n == 0){
+	  yCoordinates[i]=yCoordinates[i-1]+heights[i-1]
+	}else{
+	  yCoordinates[i]=yCoordinates[i-1]
+	}
+    }
+    heights[i]=height
+  }
+  console.log(yCoordinates)
+  svg.selectAll("rect")
+	.data(cells)
       .enter().append("rect")
 	.attr("x", function(d){return scaleX((d%n))})
-	.attr("y", function(d){return scaleY(Math.floor((d/n)))})
+	.attr("y", function(d){return yCoordinates[d]})
 	.attr("width",(pixelWidth-extraPixels)/n)
-	.attr("height",(pixelHeight-extraPixels)/numRows)
+	.attr("height",function(d){return heights[d]})
+	.attr("title",function(d){return dataPatients[Math.floor(d/n)]})
+	.attr("stroke","#CCC")
 	.attr("fill", function(d){
-				var bitRow=Math.floor(d/n);
-				var bitOrder=(n-d%n)-1
-				var quotient=0
-				var dividend=bitRow
-				for(var i=0; i <= (n-bitOrder-1) ;i++){
-				  quotient=Math.floor(dividend/Math.pow(2,n-i-1))
-				  remainder=dividend%Math.pow(2,n-i-1)
-				  dividend=remainder
-				}
-				if(quotient==1)
-				  return "white"
-				else 
-				  return "gray"});
+				  return fillInvertedBinary(d,n)})
+}
+
+function fillBinary(d,n){
+var bitRow=Math.floor(d/n);
+var bitOrder=(n-d%n)-1
+var quotient=0
+var dividend=bitRow
+for(var i=0; i <= (n-bitOrder-1) ;i++){
+  quotient=Math.floor(dividend/Math.pow(2,n-i-1))
+  var remainder=dividend%Math.pow(2,n-i-1)
+  dividend=remainder
+  }
+if(quotient==1)
+  return "rgb(0,104,55)"
+else 
+  return "#eee"
+}
+
+function fillInvertedBinary(d,n){
+var bitRow=Math.floor(d/n);
+var bitOrder=(n-d%n)-1
+var quotient=0
+var dividend=bitRow
+for(var i=0; i <= (n-bitOrder-1) ;i++){
+  quotient=Math.floor(dividend/Math.pow(2,n-i-1))
+  var remainder=dividend%Math.pow(2,n-i-1)
+  dividend=remainder
+  }
+if(quotient==1)
+  return "rgb(0,104,55)"
+else 
+  return "#eee"
+}
+
+function getPatientData(n, dataObject){
+  var arrayOfNumbers = [];
+  for (var i = 0; i < n; i++) {
+    console.log(dataObject)
+    arrayOfNumbers.push(dataObject[i].count)
+  }
+  return arrayOfNumbers;
+}
 </script>
