@@ -79,7 +79,8 @@ function printChart(){
   var heights = []
   var yCoordinates = []
   for(var i=0;i<cells.length;i++){
-    var height = Math.round((dataPatients[Math.floor(cells[i]/n)]/totalPatients)*(pixelHeight-extraPixels))
+   //inverted var height = Math.round((dataPatients[Math.floor(((numCells-1)-cells[i])/n)]/totalPatients)*(pixelHeight-extraPixels))
+   var height = Math.round((dataPatients[Math.floor(cells[i]/n)]/totalPatients)*(pixelHeight-extraPixels))
     if(i==0){
 	yCoordinates[i]=0
     }
@@ -101,9 +102,9 @@ function printChart(){
 	.attr("width",(pixelWidth-extraPixels)/n)
 	.attr("height",function(d){return heights[d]})
 	.attr("title",function(d){return dataPatients[Math.floor(d/n)]})
-	.attr("stroke","#CCC")
+	//.attr("stroke","#CCC")
 	.attr("fill", function(d){
-				  return fillInvertedBinary(d,n)})
+				  return fillBinary(d,n)})
 }
 
 function fillBinary(d,n){
@@ -123,8 +124,8 @@ else
 }
 
 function fillInvertedBinary(d,n){
-var bitRow=Math.floor(d/n);
-var bitOrder=(n-d%n)-1
+var bitRow=(Math.pow(2,n)-1)-Math.floor(d/n);
+var bitOrder=(d%n)
 var quotient=0
 var dividend=bitRow
 for(var i=0; i <= (n-bitOrder-1) ;i++){
