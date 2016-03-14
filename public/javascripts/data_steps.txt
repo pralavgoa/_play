@@ -1,0 +1,4 @@
+cat patient_visits_binary.csv|cut -d',' -f1|rev > patient_visits_binary_reversed.csv
+paste -d"," patient_visits_binary.csv patient_visits_binary_reversed.csv > patient_visits_merged.csv
+sort -k3,3 -d',' patient_visits_merged.csv
+tac patient_visits_merged_sorted.csv
