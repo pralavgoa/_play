@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+  font: 10px sans-serif;
+  shape-rendering: crispEdges;
+}
+</style>
+<body>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+<script>
+var pixelWidth=1000
+var pixelHeight=800
+var extraPixels=50
+var patientVisitCounts = []
+console.log("Start")
+d3.csv("assets/javascripts/patient_visits_display.csv", function(d) {
+  return {
+    binary:d.binary,
+    count:+d.count,
+    rev_binary:d.rev_binary
+  };
+}, function(error, rows) {
+  patientVisitCounts=rows
+  printChart()
+});
+
+function printChart(){
+  var totalPatients=0
+  $.each(patientVisitCounts,function() {
+    totalPatients += this.count;
+  });
+  var numRows = patientVisitCounts.length
+  var numColumns = patientVisitCounts[0].binary.length
+  var numCells = numRows * numColumns
+  var cells = d3.range(0,numCells)
+
+  console.log("numRows,numColumns,numCells="+numRows+","+numColumns+","+numCells)
+
+  var scaleX = d3.scale.linear()
+		.domain([0,numColumns])
+		.range([0,pixelWidth-extraPixels]);
+  var scaleY = d3.scale.linear()
+                .domain([0,numRows])
+                .range([0,pixelHeight-extraPixels]);
+  var svg = d3.select("body").append("svg")
+            .attr("width", pixelWidth+extraPixels)
+	    .attr("height", pixelHeight+extraPixels)
+	    .attr("style", "outline: thin solid blue;background-color:#aaa;")
+	.append("g")
+	    .attr("transform", "translate("+extraPixels+","+extraPixels+")");
+
+  svg.append("text")
+    .attr("transform", "translate(-6,50)rotate(-90)")
+    .style("text-anchor", "middle")
+    .text("patient count");
+
+  var heights = []
+  var yCoordinates = []
+  for(var i=0;i<numRows;i++){
+   heights[i] = Math.round((patientVisitCounts[i].count/totalPatients) * (pixelHeight-extraPixels),2)
+   if(i==0){
+	yCoordinates[i]=0
+   }
+   else{
+        yCoordinates[i]=yCoordinates[i-1]+heights[i-1]
+   }
+  }
+  console.log(yCoordinates)
+  svg.selectAll("rect")
+	.data(cells)
+      .enter().append("rect")
+	.attr("x", function(d){return scaleX(d%numColumns)})
+	.attr("y", function(d){return yCoordinates[Math.floor(d/numColumns)]})
+	.attr("width",(pixelWidth-extraPixels)/numColumns)
+	.attr("height",function(d){return heights[Math.floor(d/numColumns)]})
+	.attr("title",function(d){return patientVisitCounts[Math.floor(d/numColumns)].count})
+	.attr("stroke","#CCC")
+	.attr("fill", function(d){return fillBinary(d,numColumns,patientVisitCounts[Math.floor(d/numColumns)].rev_binary)});
+}
+
+function fillBinary(d,numColumns,binary){
+  console.log(d+","+numColumns+","+binary)
+  var bitOrder=numColumns - d%numColumns
+  if(binary.charAt(bitOrder)==1)
+    return "rgb(0,104,55)"
+  else 
+    return "#eee"
+}
+
+</script>
+</body>
