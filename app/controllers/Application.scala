@@ -29,8 +29,16 @@ class Application extends Controller {
     Ok(views.html.d3_binary())
   }
 
-  def dashboard = Action {
-    Ok(views.html.dashboard())
+  def dashboard(page:String) = Action {
+    page match {
+      case "home" => Ok(views.html.dashboard())
+      case "queries" => Ok(views.html.queries())
+      case "sites" => Ok(views.html.sites())
+      case "metadata" => Ok(views.html.metadata())
+      case "patients" => Ok(views.html.patients())
+      case "anomalies" => Ok(views.html.anomalies())
+      case _ => Ok(views.html.dashboard())
+    }
   }
 
   def selectTableAccess =  {

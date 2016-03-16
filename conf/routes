@@ -7,7 +7,8 @@ GET     /                           controllers.Application.index
 GET     /home                       controllers.Application.home
 GET	/d3			    controllers.Application.d3
 GET     /d3_playground		    controllers.Application.d3_playground
-GET	/dashboard		    controllers.Application.dashboard
+GET	/dashboard		    controllers.Application.dashboard(page="home")
+GET	/dashboard/:page	    controllers.Application.dashboard(page)
 GET	/d3_binary		    controllers.Application.d3_binary
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
