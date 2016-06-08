@@ -1,5 +1,14 @@
 ontology_id, parent_id, ontology_name
-1212,0,Demographics
-1232,0,ICD-9-CM
-2323,1212,Male
-23223,1232,Asthma
+1,0,Demographics
+2,0,ICD-9-CLASSIFICATION
+11,1,Ethnicity
+12,1,Gender
+13,1,Language
+14,1,Marital Status
+15,1,Race
+16,1,Religion
+27,1,Asthma
+21,2,Diseases and injuries
+22,2,Procedures
+23,2,Supplementary classification of external causes of injury and poisoning
+24,2,Supplementary classification of factors influencing health status and contact with health services
