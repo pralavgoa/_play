@@ -261,7 +261,7 @@ $(document).ready(function () {
 
   // Getting data for jsTree
   $.ajax({
-    url: 'tab_1_a_data.csv',
+    url: 'data/tab_1_a_data.csv',
     success: function (csvd) {
       parsedData.tree = transformOntologyData($.csv.toObjects(csvd));
 
@@ -277,7 +277,7 @@ $(document).ready(function () {
 
   // Getting data for Charts
   $.ajax({
-    url: 'tab_1_b_data.csv',
+    url: 'data/tab_1_b_data.csv',
     success: function (csvd) {
       parsedData.chart = transformQueryData($.csv.toObjects(csvd));
     },
@@ -286,7 +286,7 @@ $(document).ready(function () {
 
   // Getting data for Notes
   $.ajax({
-    url: 'tab_1_c_data.csv',
+    url: 'data/tab_1_c_data.csv',
     success: function (csvd) {
       parsedData.notes = transformNotesData($.csv.toObjects(csvd));
     },
