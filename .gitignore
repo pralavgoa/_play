@@ -1,3 +1,4 @@
+app/views/data/
 # Ignore Play! working directory #
 bin/
 /db
