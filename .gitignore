@@ -26,3 +26,4 @@ activator
 activator-launch-1.3.7.jar
 activator.bat
 build.sbt
+.DS_Store
